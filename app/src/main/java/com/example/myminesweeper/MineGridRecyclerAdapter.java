@@ -62,7 +62,23 @@ public class MineGridRecyclerAdapter extends RecyclerView.Adapter<MineGridRecycl
                 }
             });
 
-
+            if (cell.isRevealed()) {
+                if (cell.getValue() == Cell.BOMB) {
+                    valueTextView.setText(R.string.bomb);
+                } else if (cell.getValue() == Cell.BLANK) {
+                    valueTextView.setText("");
+                    itemView.setBackgroundColor(Color.WHITE);
+                } else {
+                    valueTextView.setText(String.valueOf(cell.getValue()));
+                    if (cell.getValue() == 1) {
+                        valueTextView.setTextColor(Color.BLUE);
+                    } else if (cell.getValue() == 2) {
+                        valueTextView.setTextColor(Color.GREEN);
+                    } else if (cell.getValue() == 3) {
+                        valueTextView.setTextColor(Color.RED);
+                    }
+                }
+            }
         }
     }
 }

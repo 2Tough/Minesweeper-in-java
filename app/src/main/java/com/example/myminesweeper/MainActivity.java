@@ -1,4 +1,4 @@
-package com.example.minesweeper;
+package com.example.myminesweeper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +12,7 @@ public class MainActivity extends AppCompatActivity implements OnCellClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
+
     @Override
     public void onCellClick(Cell cell) {
         Toast.makeText(getApplicationContext(), "Cell clicked", Toast.LENGTH_SHORT).show();

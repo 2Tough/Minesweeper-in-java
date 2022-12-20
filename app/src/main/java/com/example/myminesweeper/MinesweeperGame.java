@@ -1,4 +1,4 @@
-package com.example.minesweeper;
+package com.example.myminesweeper;
 
 public class MinesweeperGame {
     private MineGrid mineGrid;

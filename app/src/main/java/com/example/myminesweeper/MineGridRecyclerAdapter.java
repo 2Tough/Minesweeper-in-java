@@ -1,9 +1,10 @@
-package com.example.minesweeper;
+package com.example.myminesweeper;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,10 +19,11 @@ public class MineGridRecyclerAdapter extends RecyclerView.Adapter<MineGridRecycl
         this.cells = cells;
         this.listener = listener;
     }
+
     @NonNull
     @Override
     public MineTileViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_cell, parent, attachToRoot, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_cell, parent, false);
         return new MineTileViewHolder(itemView);
     }
 
@@ -32,33 +34,35 @@ public class MineGridRecyclerAdapter extends RecyclerView.Adapter<MineGridRecycl
     }
 
     @Override
-    public int getItemCount() { return cells.size(); }
+    public int getItemCount() {
+        return cells.size();
+    }
 
-    public void setCells(List<Cell> cells){
+    public void setCells(List<Cell> cells) {
         this.cells = cells;
         notifyDataSetChanged();
     }
 
     class MineTileViewHolder extends RecyclerView.ViewHolder {
-            TextView valueTextView;
+        TextView valueTextView;
 
-            public MineTileViewHolder(@NonNull view itemView){
-                super(itemView);
+        public MineTileViewHolder(@NonNull View itemView) {
+            super(itemView);
 
-                valueTextView = itemView.findViewById(R.id.item_cell_value);
-            }
-
+            valueTextView = itemView.findViewById(R.id.item_cell_value);
         }
 
         public void bind(final Cell cell) {
-            itemView.setBackgroundColor(Color.GREEN);
+            itemView.setBackgroundColor(Color.GRAY);
 
-            itemView.setOnClickListener((view) {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view)
-                listener.onCellClick(cell);
+                public void onClick(View view) {
+                    listener.cellClick(cell);
                 }
             });
+
+
         }
     }
 }

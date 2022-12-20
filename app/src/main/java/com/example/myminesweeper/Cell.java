@@ -1,4 +1,4 @@
-package com.learntodroid.androidminesweeper;
+package com.example.myminesweeper;
 
 public class Cell {
     public static final int BOMB = -1;

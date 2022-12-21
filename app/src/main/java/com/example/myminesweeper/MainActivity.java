@@ -15,7 +15,10 @@ public class MainActivity extends AppCompatActivity implements OnCellClickListen
     RecyclerView gridRecyclerView;
     MineGridRecyclerAdapter mineGridRecyclerAdapter;
     MinesweeperGame game;
-    TextView smiley;
+    TextView smiley, timer, flag, flagsCount;
+    CountDownTimer countDownTimer;
+    int secondsElapsed;
+    boolean timerStarted;
 
 
     @Override
@@ -23,26 +26,79 @@ public class MainActivity extends AppCompatActivity implements OnCellClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        smiley = findViewById(R.id.activity_main_grid);
+        flag = findViewById(R.id.activity_main_flag);
+        flagsCount = findViewById(R.id.activity_main_flagsleft);
+
+        flag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                game.toggleMode();
+                if (game.isFlagMode()) {
+                    GradientDrawable border = new GradientDrawable();
+                    border.setColor(0xFFFFFFFF);
+                    border.setStroke(1, 0xFF000000);
+                    flag.setBackground(border);
+                } else {
+                    GradientDrawable border = new GradientDrawable();
+                    border.setColor(0xFFFFFFFF);
+                    flag.setBackground(border);
+                }
+            }
+        });
+
+        smiley = findViewById(R.id.activity_main_smiley);
         smiley.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 game = new MinesweeperGame(10, 10);
                 mineGridRecyclerAdapter.setCells(game.getMineGrid().getCells());
+                timerStarted = false;
+                countDownTimer.cancel();
+                secondsElapsed = 0;
+                timer.setText(R.string.default_count);
+                flagsCount.setText(String.format("%03d", game.getNumberOfBombs() - game.getFlagCount()));
+
             }
         });
+
+        timer = findViewById(R.id.activity_main_timer);
+        timerStarted = false;
+        countDownTimer = new CountDownTimer(999000L, 1000) {
+            public void onTick(long millisUntilFinished) {
+                secondsElapsed += 1;
+                timer.setText(String.format("%03d", secondsElapsed));
+            }
+
+            public void onFinish() {
+                game.outOfTime();
+                Toast.makeText(getApplicationContext(), "Game Over: Timer Expired", Toast.LENGTH_SHORT).show();
+                game.getMineGrid().revealAllBombs();
+                mineGridRecyclerAdapter.setCells(game.getMineGrid().getCells());
+
+            }
+        };
 
         gridRecyclerView = findViewById(R.id.activity_main_grid);
         gridRecyclerView.setLayoutManager(new GridLayoutManager(this, 10));
         game = new MinesweeperGame(10, 10);
         mineGridRecyclerAdapter = new MineGridRecyclerAdapter(game.getMineGrid().getCells(), this);
         gridRecyclerView.setAdapter(mineGridRecyclerAdapter);
+        flagsCount.setText(String.format("%03d", game.getNumberOfBombs() - game.getFlagCount()));
     }
 
+
+
     @Override
-    public void onCellClick(Cell cell) {
+    public void cellClick(Cell cell) {
         game.handleCellClick(cell);
+
+        flagsCount.setText(String.format("%03d", game.getNumberOfBombs() - game.getFlagCount()));
+
+        if (!timerStarted) {
+            countDownTimer.start();
+            timerStarted = true;
+        }
 
         if(game.isGameOver()) {
             Toast.makeText(getApplicationContext(),"Game is Over", Toast.LENGTH_SHORT).show();
@@ -50,12 +106,5 @@ public class MainActivity extends AppCompatActivity implements OnCellClickListen
         }
 
         mineGridRecyclerAdapter.setCells(game.getMineGrid().getCells());
-
-
-    }
-
-    @Override
-    public void cellClick(Cell cell) {
-
     }
 }
